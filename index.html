@@ -6,6 +6,9 @@
     <title>Formulário - TrybeTravel</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
+    <title>Travel Form</title>
+  <head>
   </head>
   <body>
     <h1 id="title" class="text-center">Formulário Trybe Travel</h1>
@@ -99,5 +102,117 @@
       <button class="btn btn-primary" type="submit" id="submit-btn" disabled>Enviar</button>
       <button class="btn btn-danger" type="reset" id="clear-btn">Limpar</button>
     </form>
+    <script>
+const submitBtn = document.querySelector('#submit-btn');
+
+ function clearFields() {
+  submitBtn.disabled = true;
+ }
+
+ function enableSubmit() {
+   const agreement = document.querySelector('#agreement');
+  submitBtn.disabled = !agreement.checked;
+ }
+
+const validate = new JustValidate(
+  '#main-form',
+  {
+    errorFieldCssClass: 'is-invalid',
+    errorFieldStyle: {
+      border: '1px solid red',
+    },
+    errorLabelCssClass: 'is-label-invalid',
+    errorLabelStyle: {
+      color: 'red',
+      textDecoration: 'underlined',
+    },
+    focusInvalidField: true,
+    lockForm: true,
+    tooltip: {
+      position: 'top',
+    },
+  },
+);
+
+validate
+  .addField('#fullName', [
+    {
+      rule: 'required',
+      errorMessage: 'O campo de nome é obrigatório.',
+    },
+    {
+      rule: 'maxLength',
+      value: 40,
+      errorMessage: 'O limite é de 40 caracteres.',
+    },
+    {
+      rule: 'minLength',
+      value: 10,
+      errorMessage: 'O mínimo é de 10 caracteres.',
+    },
+  ])
+  .addField('#email', [
+    {
+      rule: 'required',
+      errorMessage: 'O campo de email é obrigatório.',
+    },
+    {
+      rule: 'email',
+      errorMessage: 'O email digitado não é válido.',
+    },
+    {
+      rule: 'maxLength',
+      value: 50,
+      errorMessage: 'O limite é de 50 caracteres.',
+    },
+  ])
+  .addField('#question', [
+    {
+      rule: 'required',
+      errorMessage: 'O campo de resposta é obrigatório.',
+    },
+    {
+      rule: 'maxLength',
+      value: 500,
+      errorMessage: 'O limite é de 500 caracteres',
+    },
+  ])
+  .addField('#date', [
+    {
+      rule: 'required',
+      errorMessage: 'O campo de data é obrigatório.',
+    },
+  ]);
+
+window.onload = function () {
+  const clearBtn = document.querySelector('#clear-btn');
+  clearBtn.addEventListener('click', clearFields);
+  const agreement = document.querySelector('#agreement');
+  agreement.addEventListener('change', enableSubmit);
+};
+const form = document.querySelector('#main-form');
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault(); // Impede o envio padrão do formulário
+
+  // Aqui você pode adicionar sua lógica para enviar os dados do formulário para o servidor
+
+  // Exemplo de envio usando Fetch API
+  fetch('URL_DO_SERVIDOR', {
+    method: 'POST',
+    body: new FormData(form)
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Aqui você pode lidar com a resposta do servidor após o envio do formulário
+    console.log(data);
+  })
+  .catch(error => {
+    // Tratar erros de envio do formulário
+    console.error(error);
+  });
+});
+
+    </script>
   </body>
 </html>
